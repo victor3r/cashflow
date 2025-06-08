@@ -8,9 +8,18 @@ public class CultureMiddleware(RequestDelegate next)
 
     public async Task Invoke(HttpContext context)
     {
-        var culture = context.Request.Headers.AcceptLanguage.FirstOrDefault();
+        var supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
 
-        var cultureInfo = string.IsNullOrWhiteSpace(culture) ? new CultureInfo("en") : new CultureInfo(culture);
+        var requestedCulture = context.Request.Headers.AcceptLanguage.FirstOrDefault();
+
+        var cultureInfo = new CultureInfo("en");
+
+        if (!string.IsNullOrWhiteSpace(requestedCulture) &&
+            supportedCultures.Exists(culture =>
+                culture.Name.Equals(requestedCulture, StringComparison.CurrentCultureIgnoreCase)))
+        {
+            cultureInfo = new CultureInfo(requestedCulture);
+        }
 
         CultureInfo.CurrentCulture = cultureInfo;
         CultureInfo.CurrentUICulture = cultureInfo;
