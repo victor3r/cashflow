@@ -1,13 +1,17 @@
 using CashFlow.API.Filters;
 using CashFlow.API.Middleware;
+using CashFlow.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddRouting(option => option.LowercaseUrls = true);
 builder.Services.AddMvc(option => option.Filters.Add(typeof(ExceptionFilter)));
+
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
