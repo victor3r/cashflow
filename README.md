@@ -48,7 +48,7 @@ The project follows Clean Architecture principles, organized in layers:
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/CashFlow.git
+git clone https://github.com/victor3r/cashflow.git
 ```
 
 2. Update the connection string in `appsettings.Development.json`
