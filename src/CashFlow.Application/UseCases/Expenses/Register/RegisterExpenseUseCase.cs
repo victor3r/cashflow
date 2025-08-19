@@ -13,7 +13,7 @@ public class RegisterExpenseUseCase(IExpensesRepository repository, IUnitOfWork 
     private readonly IExpensesRepository _repository = repository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public ResponseRegisteredExpenseJson Execute(RequestRegisterExpenseJson request)
+    public async Task<ResponseRegisteredExpenseJson> Execute(RequestRegisterExpenseJson request)
     {
         Validate(request);
 
@@ -26,9 +26,9 @@ public class RegisterExpenseUseCase(IExpensesRepository repository, IUnitOfWork 
             PaymentType = (PaymentType)request.PaymentType
         };
 
-        _repository.Add(expense);
+        await _repository.Add(expense);
 
-        _unitOfWork.Commit();
+        await _unitOfWork.Commit();
 
         return new ResponseRegisteredExpenseJson
         {
