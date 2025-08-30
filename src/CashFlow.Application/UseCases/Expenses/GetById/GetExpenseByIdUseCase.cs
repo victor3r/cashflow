@@ -5,9 +5,9 @@ using CashFlow.Exception;
 using CashFlow.Exception.ExceptionsBase;
 
 namespace CashFlow.Application.UseCases.Expenses.GetById;
-public class GetExpenseByIdUseCase(IExpensesRepository repository, IMapper mapper) : IGetExpenseByIdUseCase
+public class GetExpenseByIdUseCase(IExpensesReadOnlyRepository repository, IMapper mapper) : IGetExpenseByIdUseCase
 {
-    private readonly IExpensesRepository _repository = repository;
+    private readonly IExpensesReadOnlyRepository _repository = repository;
     private readonly IMapper _mapper = mapper;
 
     public async Task<ResponseExpenseJson> Execute(Guid id)
