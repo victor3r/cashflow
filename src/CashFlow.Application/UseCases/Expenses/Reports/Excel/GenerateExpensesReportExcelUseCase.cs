@@ -14,6 +14,11 @@ public class GenerateExpensesReportExcelUseCase : IGenerateExpensesReportExcelUs
         var worksheet = workbook.Worksheets.Add(month.ToString("Y"));
 
         InsertHeader(worksheet);
+
+        var file = new MemoryStream();
+        workbook.SaveAs(file);
+
+        return file.ToArray();
     }
 
     private static void InsertHeader(IXLWorksheet worksheet)
@@ -32,7 +37,5 @@ public class GenerateExpensesReportExcelUseCase : IGenerateExpensesReportExcelUs
         headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#f5c2b6");
         headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
         worksheet.Cell(currentRow, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-        headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
-        headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
     }
 }
