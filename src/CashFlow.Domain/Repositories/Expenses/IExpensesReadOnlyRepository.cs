@@ -5,4 +5,5 @@ public interface IExpensesReadOnlyRepository
 {
     Task<List<Expense>> GetAll();
     Task<Expense?> GetById(Guid id);
+    Task<List<Expense>> FilterByMonth(DateOnly date);
 }

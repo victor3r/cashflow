@@ -1,11 +1,15 @@
 ﻿using CashFlow.Domain.Reports;
+using CashFlow.Domain.Repositories.Expenses;
 using ClosedXML.Excel;
 
 namespace CashFlow.Application.UseCases.Expenses.Reports.Excel;
-public class GenerateExpensesReportExcelUseCase : IGenerateExpensesReportExcelUseCase
+public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repository) : IGenerateExpensesReportExcelUseCase
 {
+    private readonly IExpensesReadOnlyRepository _repository = repository;
     public async Task<byte[]> Execute(DateOnly month)
     {
+        var expenses = await _repository.FilterByMonth(month);
+
         using var workbook = new XLWorkbook();
 
         workbook.Style.Font.FontSize = 12;
