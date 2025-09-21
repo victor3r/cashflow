@@ -10,6 +10,11 @@ public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repo
     {
         var expenses = await _repository.FilterByMonth(month);
 
+        if (expenses.Count == 0)
+        {
+            return [];
+        }
+
         using var workbook = new XLWorkbook();
 
         workbook.Style.Font.FontSize = 12;
@@ -19,7 +24,7 @@ public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repo
 
         InsertHeader(worksheet);
 
-        var file = new MemoryStream();
+        using var file = new MemoryStream();
         workbook.SaveAs(file);
 
         return file.ToArray();
