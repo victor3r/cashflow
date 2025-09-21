@@ -1,4 +1,5 @@
-﻿using CashFlow.Domain.Reports;
+﻿using CashFlow.Domain.Enums;
+using CashFlow.Domain.Reports;
 using CashFlow.Domain.Repositories.Expenses;
 using ClosedXML.Excel;
 
@@ -24,11 +25,35 @@ public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repo
 
         InsertHeader(worksheet);
 
+        int currentRow;
+
+        foreach (var expense in expenses)
+        {
+            currentRow = worksheet.LastRowUsed().RowNumber() + 1;
+
+            worksheet.Cell(currentRow, 1).Value = expense.Title;
+            worksheet.Cell(currentRow, 2).Value = expense.Date;
+            worksheet.Cell(currentRow, 3).Value = ConvertPaymentType(expense.PaymentType);
+            worksheet.Cell(currentRow, 4).Value = expense.Amount;
+            worksheet.Cell(currentRow, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+            worksheet.Cell(currentRow, 5).Value = expense.Description;
+        }
+
         using var file = new MemoryStream();
         workbook.SaveAs(file);
 
         return file.ToArray();
     }
+
+    private static string ConvertPaymentType(PaymentType paymentType) =>
+        paymentType switch
+        {
+            PaymentType.Cash => ResourcePaymentTypeMessages.CASH,
+            PaymentType.CreditCard => ResourcePaymentTypeMessages.CREDIT_CARD,
+            PaymentType.DebitCard => ResourcePaymentTypeMessages.DEBIT_CARD,
+            PaymentType.ElectronicTransfer => ResourcePaymentTypeMessages.ELECTRONIC_TRANSFER,
+            _ => ""
+        };
 
     private static void InsertHeader(IXLWorksheet worksheet)
     {
