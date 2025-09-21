@@ -6,6 +6,7 @@ using ClosedXML.Excel;
 namespace CashFlow.Application.UseCases.Expenses.Reports.Excel;
 public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repository) : IGenerateExpensesReportExcelUseCase
 {
+    private const string CURRENCY_SYMBOL = "R$";
     private readonly IExpensesReadOnlyRepository _repository = repository;
     public async Task<byte[]> Execute(DateOnly month)
     {
@@ -35,9 +36,12 @@ public class GenerateExpensesReportExcelUseCase(IExpensesReadOnlyRepository repo
             worksheet.Cell(currentRow, 2).Value = expense.Date;
             worksheet.Cell(currentRow, 3).Value = ConvertPaymentType(expense.PaymentType);
             worksheet.Cell(currentRow, 4).Value = expense.Amount;
+            worksheet.Cell(currentRow, 4).Style.NumberFormat.Format = $"-{CURRENCY_SYMBOL} #,##0.00";
             worksheet.Cell(currentRow, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             worksheet.Cell(currentRow, 5).Value = expense.Description;
         }
+
+        worksheet.Columns().AdjustToContents();
 
         using var file = new MemoryStream();
         workbook.SaveAs(file);
